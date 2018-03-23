@@ -21,12 +21,12 @@ const (
 	ColorDefault = 9
 )
 
-type OdroidShow struct {
+type OdroidShowBoard struct {
 	Port   *serial.Port
 	Buffer *bytes.Buffer
 }
 
-func (odroid *OdroidShow) Flush() error {
+func (odroid *OdroidShowBoard) Sync() error {
 	payload := odroid.Buffer.Bytes()
 	_, err := odroid.Port.Write(payload)
 	odroid.Buffer.Reset()
@@ -34,7 +34,7 @@ func (odroid *OdroidShow) Flush() error {
 	return err
 }
 
-func (odroid *OdroidShow) Write(b []byte) {
+func (odroid *OdroidShowBoard) Write(b []byte) {
 	_, err := odroid.Buffer.Write(b)
 
 	if err != nil {
@@ -42,39 +42,47 @@ func (odroid *OdroidShow) Write(b []byte) {
 	}
 }
 
-func (odroid *OdroidShow) WriteString(s string) {
+func (odroid *OdroidShowBoard) WriteString(s string) {
 	odroid.Write([]byte(s))
 }
 
-func (odroid *OdroidShow) Clear() error {
-	_, err := odroid.Port.Write([]byte("\033c"))
-	return err
+func (odroid *OdroidShowBoard) Clear() error {
+	odroid.WriteString("\033c")
+	return odroid.Sync()
 }
 
-func (odroid *OdroidShow) Ln() {
+func (odroid *OdroidShowBoard) Ln() {
 	odroid.WriteString("\012\015")
 }
 
-func (odroid *OdroidShow) Color(color int) {
+func (odroid *OdroidShowBoard) Color(color int) {
 	payload := fmt.Sprintf("\033[%dm", color)
 	odroid.Write([]byte(payload))
 }
 
-func (odroid *OdroidShow) ColorReset() {
+func (odroid *OdroidShowBoard) ColorReset() {
 	odroid.Fg(ColorWhite)
 	odroid.Bg(ColorBlack)
 }
 
-func (odroid *OdroidShow) Fg(color int) {
-	odroid.Color(30 + color)
+func (odroid *OdroidShowBoard) Fg(color int) {
+	if color < 10 {
+		odroid.Color(30 + color)
+	} else {
+		log.Printf("Ignoring color core: %d", color)
+	}
 }
 
-func (odroid *OdroidShow) Bg(color int) {
-	odroid.Color(40 + color)
+func (odroid *OdroidShowBoard) Bg(color int) {
+	if color < 10 {
+		odroid.Color(40 + color)
+	} else {
+		log.Printf("Ignoring color core: %d", color)
+	}
 }
 
-func InitOdroidShow(path string) (*OdroidShow, error) {
-	var odroid OdroidShow
+func NewOdroidShowBoard(path string) (*OdroidShowBoard, error) {
+	var odroid OdroidShowBoard
 	var buffer bytes.Buffer
 
 	conf := &serial.Config{Name: path, Baud: 500000}
@@ -90,11 +98,10 @@ func InitOdroidShow(path string) (*OdroidShow, error) {
 }
 
 func main() {
-	odroid, err := InitOdroidShow("/dev/ttyUSB0")
+	odroid, err := NewOdroidShowBoard("/dev/ttyUSB0")
 
 	if err != nil {
 		log.Fatal(err)
-
 	}
 
 	odroid.Clear()
@@ -103,13 +110,13 @@ func main() {
 	odroid.Ln()
 	odroid.WriteString("and second line!")
 
-	odroid.Flush()
+	odroid.Sync()
 	time.Sleep(time.Second)
 
 	odroid.Ln()
 	odroid.WriteString("test")
 
-	odroid.Flush()
+	odroid.Sync()
 	time.Sleep(time.Second)
 
 	odroid.Ln()
@@ -119,6 +126,6 @@ func main() {
 	odroid.Ln()
 	odroid.WriteString("and more?!!!1111")
 
-	odroid.Flush()
+	odroid.Sync()
 	time.Sleep(time.Second)
 }
