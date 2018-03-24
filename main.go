@@ -1,4 +1,4 @@
-package main
+package odroid
 
 import (
 	"bytes"
@@ -27,8 +27,25 @@ type OdroidShowBoard struct {
 }
 
 func (odroid *OdroidShowBoard) Sync() error {
+	start := 0
+	end := 0
 	payload := odroid.Buffer.Bytes()
-	_, err := odroid.Port.Write(payload)
+	var err error
+
+	for start < len(payload) {
+		remaining := len(payload[start:])
+
+		if remaining > 25 {
+			end = start + 25
+		} else {
+			end = start + remaining
+		}
+
+		_, err = odroid.Port.Write(payload[start:end])
+		time.Sleep(time.Millisecond * 100)
+
+		start = end
+	}
 	odroid.Buffer.Reset()
 
 	return err
@@ -95,37 +112,4 @@ func NewOdroidShowBoard(path string) (*OdroidShowBoard, error) {
 	odroid.Buffer = &buffer
 	odroid.Port = serialPort
 	return &odroid, nil
-}
-
-func main() {
-	odroid, err := NewOdroidShowBoard("/dev/ttyUSB0")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	odroid.Clear()
-	odroid.ColorReset()
-	odroid.WriteString("hello from golang!")
-	odroid.Ln()
-	odroid.WriteString("and second line!")
-
-	odroid.Sync()
-	time.Sleep(time.Second)
-
-	odroid.Ln()
-	odroid.WriteString("test")
-
-	odroid.Sync()
-	time.Sleep(time.Second)
-
-	odroid.Ln()
-	odroid.WriteString("READ STUFF")
-	odroid.Ln()
-	odroid.WriteString("MORE STUFF")
-	odroid.Ln()
-	odroid.WriteString("and more?!!!1111")
-
-	odroid.Sync()
-	time.Sleep(time.Second)
 }
