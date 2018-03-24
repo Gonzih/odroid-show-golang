@@ -82,6 +82,10 @@ func (odroid *OdroidShowBoard) ColorReset() {
 	odroid.Bg(ColorBlack)
 }
 
+func (odroid *OdroidShowBoard) CursorReset() {
+	odroid.WriteString("\033[H")
+}
+
 func (odroid *OdroidShowBoard) Fg(color int) {
 	if color < 10 {
 		odroid.Color(30 + color)
