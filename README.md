@@ -18,16 +18,16 @@ import (
 )
 
 func main() {
-	odroid, err := NewOdroidShowBoard("/dev/ttyUSB0")
+	odr, err := NewOdroidShowBoard("/dev/ttyUSB0")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	odroid.Clear()
-	odroid.ColorReset()
-	odroid.WriteString("hello from golang!")
-	odroid.Ln()
+	odr.Clear()
+	odr.ColorReset()
+	odr.WriteString("hello from golang!")
+	odr.Ln()
 	odr.Fg(ColorBlack)
 	odr.Bg(ColorRed)
 	odroid.WriteString("this is how you write data to your board")
