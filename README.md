@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	odr, err := NewOdroidShowBoard("/dev/ttyUSB0")
+	odr, err := odroid.NewOdroidShowBoard("/dev/ttyUSB0")
 
 	if err != nil {
 		log.Fatal(err)
@@ -28,8 +28,8 @@ func main() {
 	odr.ColorReset()
 	odr.WriteString("hello from golang!")
 	odr.Ln()
-	odr.Fg(ColorBlack)
-	odr.Bg(ColorRed)
+	odr.Fg(odroid.ColorBlack)
+	odr.Bg(odroid.ColorRed)
 	odroid.WriteString("this is how you write data to your board")
 
 	err = odr.Sync() // will actualyl send buffer contents to the board
