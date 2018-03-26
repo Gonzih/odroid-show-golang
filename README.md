@@ -22,21 +22,21 @@ import (
 )
 
 func main() {
-	odr, err := odroid.NewOdroidShowBoard("/dev/ttyUSB0")
+	board, err := odroid.NewOdroidShowBoard("/dev/ttyUSB0")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	odr.Clear()
-	odr.ColorReset()
-	odr.WriteString("hello from golang!")
-	odr.Ln()
-	odr.Fg(odroid.ColorBlack)
-	odr.Bg(odroid.ColorRed)
-	odroid.WriteString("this is how you write data to your board")
+	board.Clear()
+	board.ColorReset()
+	board.WriteString("hello from golang!")
+	board.Ln()
+	board.Fg(odroid.ColorBlack)
+	board.Bg(odroid.ColorRed)
+	board.WriteString("this is how you write data to your board")
 
-	err = odr.Sync() // will actualyl send buffer contents to the board
+	err = board.Sync() // will actualyl send buffer contents to the board
 
 	if err != nil {
 		log.Fatal(err)
