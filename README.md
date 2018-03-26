@@ -1,5 +1,7 @@
 # ODRDOI-SHOW golang client
 
+![demo](https://raw.githubusercontent.com/Gonzih/odroid-status-screen-go/master/demo.jpg)
+
 ## Installation
 
 ```
