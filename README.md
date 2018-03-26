@@ -1,4 +1,4 @@
-# ODRDOI-SHOW golang client
+# ODRDOID-SHOW golang client
 
 ![demo](https://raw.githubusercontent.com/Gonzih/odroid-status-screen-go/master/demo.jpg)
 
