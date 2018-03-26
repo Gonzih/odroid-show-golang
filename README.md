@@ -2,6 +2,8 @@
 
 ![demo](https://raw.githubusercontent.com/Gonzih/odroid-status-screen-go/master/demo.jpg)
 
+[Sample project](https://github.com/Gonzih/odroid-status-screen-go)
+
 ## Installation
 
 ```
