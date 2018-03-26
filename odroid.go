@@ -27,6 +27,7 @@ type OdroidShowBoard struct {
 }
 
 func (odroid *OdroidShowBoard) Sync() error {
+	limit := 10
 	start := 0
 	end := 0
 	payload := odroid.Buffer.Bytes()
@@ -35,14 +36,14 @@ func (odroid *OdroidShowBoard) Sync() error {
 	for start < len(payload) {
 		remaining := len(payload[start:])
 
-		if remaining > 25 {
-			end = start + 25
+		if remaining > limit {
+			end = start + limit
 		} else {
 			end = start + remaining
 		}
 
 		_, err = odroid.Port.Write(payload[start:end])
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Millisecond * 50)
 
 		start = end
 	}
