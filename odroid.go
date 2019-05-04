@@ -103,6 +103,10 @@ func (odroid *OdroidShowBoard) Bg(color int) {
 	}
 }
 
+func (odroid *OdroidShowBoard) Rotate() {
+	odroid.WriteString("\033[r")
+}
+
 func NewOdroidShowBoard(path string) (*OdroidShowBoard, error) {
 	var odroid OdroidShowBoard
 	var buffer bytes.Buffer
